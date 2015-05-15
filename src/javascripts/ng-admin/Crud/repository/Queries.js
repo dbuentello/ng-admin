@@ -8,6 +8,7 @@ define(function () {
      * @param {$q}          $q
      * @param {Restangular} Restangular
      * @param {Application} Configuration
+     * @param {AdminDescription} AdminDescription
      * @constructor
      */
     function Queries($q, Restangular, Configuration, AdminDescription) {

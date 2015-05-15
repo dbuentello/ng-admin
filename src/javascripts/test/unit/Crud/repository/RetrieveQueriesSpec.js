@@ -13,6 +13,7 @@ define(function (require) {
         mixins = require('mixins'),
         PromisesResolver = require('mock/PromisesResolver'),
         $q = require('mock/q'),
+        adminDescription,
         config,
         rawCats,
         rawHumans,
@@ -59,7 +60,13 @@ define(function (require) {
                 spyOn(Restangular, 'getList').and.returnValue(mixins.buildPromise({data: rawCats, headers: function() {}}));
                 spyOn(PromisesResolver, 'allEvenFailed').and.returnValue(mixins.buildPromise([{status: 'success', result: rawHumans[0] }, {status: 'success', result: rawHumans[1] }, {status: 'success', result: rawHumans[2] }]));
 
-                var retrieveQueries = new RetrieveQueries($q, Restangular, config, PromisesResolver);
+                adminDescription = {
+                    getPromisesResolver: function() {
+                        return PromisesResolver;
+                    }
+                };
+
+                var retrieveQueries = new RetrieveQueries($q, Restangular, config, adminDescription);
 
                 retrieveQueries.getAll(catView)
                     .then(function (result) {
@@ -77,7 +84,7 @@ define(function (require) {
 
         describe('getReferencedData', function() {
             it('should return all references data for a View with multiple calls', function (done) {
-                var retrieveQueries = new RetrieveQueries($q, Restangular, config, PromisesResolver),
+                var retrieveQueries,
                     post = new Entity('posts'),
                     author = new Entity('authors'),
                     authorRef = new ReferenceField('author');
@@ -100,6 +107,14 @@ define(function (require) {
                 spyOn(Restangular, 'get').and.returnValue(mixins.buildPromise(mixins.buildPromise({})));
                 spyOn(PromisesResolver, 'allEvenFailed').and.returnValue(mixins.buildPromise([{status: 'success', result: rawAuthors[0] }, { status: 'success', result: rawAuthors[1] }]));
 
+                adminDescription = {
+                    getPromisesResolver: function() {
+                        return PromisesResolver;
+                    }
+                };
+
+                retrieveQueries = new RetrieveQueries($q, Restangular, config, adminDescription);
+
                 retrieveQueries.getReferencedData(post.listView().getReferences(), rawPosts)
                     .then(function (referencedData) {
                         expect(referencedData.author.length).toEqual(2);
@@ -110,7 +125,7 @@ define(function (require) {
             });
 
             it('should return all references data for a View with one call', function (done) {
-                var retrieveQueries = new RetrieveQueries($q, Restangular, config, PromisesResolver),
+                var retrieveQueries,
                     post = new Entity('posts'),
                     author = new Entity('authors'),
                     authorRef = new ReferenceField('author');
@@ -139,6 +154,14 @@ define(function (require) {
                 spyOn(Restangular, 'getList').and.returnValue(mixins.buildPromise(mixins.buildPromise({})));
                 spyOn(PromisesResolver, 'allEvenFailed').and.returnValue(mixins.buildPromise([{status: 'success', result: { data: rawAuthors }}]));
 
+                adminDescription = {
+                    getPromisesResolver: function() {
+                        return PromisesResolver;
+                    }
+                };
+
+                retrieveQueries = new RetrieveQueries($q, Restangular, config, adminDescription);
+
                 retrieveQueries.getReferencedData(post.listView().getReferences(), rawPosts)
                     .then(function (referencedData) {
                         expect(referencedData['author'].length).toEqual(2);
@@ -151,7 +174,7 @@ define(function (require) {
 
         describe('getReferencedListData', function() {
             it('should return all referencedLists data for a View', function (done) {
-                var retrieveQueries = new RetrieveQueries($q, Restangular, config, PromisesResolver),
+                var retrieveQueries,
                     state = new Entity('states').identifier(new Field('id')),
                     character = new Entity('characters'),
                     stateCharacters = new ReferencedListField('character');
@@ -176,6 +199,14 @@ define(function (require) {
 
                 spyOn(Restangular, 'getList').and.returnValue(mixins.buildPromise(mixins.buildPromise({data: rawCharacters})));
                 spyOn($q, 'all').and.returnValue(mixins.buildPromise([{data: rawCharacters}]));
+
+                adminDescription = {
+                    getPromisesResolver: function() {
+                        return PromisesResolver;
+                    }
+                };
+
+                retrieveQueries = new RetrieveQueries($q, Restangular, config, adminDescription);
 
                 retrieveQueries.getReferencedListData(state.listView().getReferencedLists(), null, null, 1)
                     .then(function (referencedListData) {
@@ -202,6 +233,12 @@ define(function (require) {
                     };
                 };
 
+                adminDescription = {
+                    getPromisesResolver: function() {
+                        return PromisesResolver;
+                    }
+                };
+
                 entity = new Entity('cat').identifier(new Field('id'));
                 view = entity.creationView()
                     .addField(new TextField('name'));
@@ -217,7 +254,7 @@ define(function (require) {
                     }
                 }));
 
-                var retrieveQueries = new RetrieveQueries({}, Restangular, config, PromisesResolver);
+                var retrieveQueries = new RetrieveQueries({}, Restangular, config, adminDescription);
 
                 retrieveQueries.getOne(entity, view.type, 1)
                     .then(function (rawEntry) {

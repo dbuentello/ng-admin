@@ -8,7 +8,9 @@ define(function (require) {
         TextField = require('ng-admin/es6/lib/Field/TextField'),
         Entity = require('ng-admin/es6/lib/Entity/Entity'),
         Restangular = require('mock/Restangular'),
+        PromisesResolver = require('mock/PromisesResolver'),
         mixins = require('mixins'),
+        adminDescription,
         config,
         entity,
         view;
@@ -28,6 +30,12 @@ define(function (require) {
                 };
             };
 
+            adminDescription = {
+                getPromisesResolver: function() {
+                    return PromisesResolver;
+                }
+            };
+
             entity = new Entity('cat').identifier(new Field('id'));
             view = entity.creationView()
                 .addField(new TextField('name'));
@@ -35,7 +43,7 @@ define(function (require) {
 
         describe("deleteOne", function () {
             it('should DELETE an entity when calling deleteone', function (done) {
-                var deleteQueries = new DeleteQueries({}, Restangular, config);
+                var deleteQueries = new DeleteQueries({}, Restangular, config, adminDescription);
                 spyOn(Restangular, 'oneUrl').and.callThrough();
                 spyOn(Restangular, 'customDELETE').and.callThrough();
 
@@ -52,7 +60,7 @@ define(function (require) {
             it('should DELETE entities when calling batchEntities', function () {
                 var deleteQueries = new DeleteQueries({all: function (promises) {
                     return promises;
-                }}, Restangular, config);
+                }}, Restangular, config, adminDescription);
                 spyOn(Restangular, 'oneUrl').and.callThrough();
                 spyOn(Restangular, 'customDELETE').and.callThrough();
 

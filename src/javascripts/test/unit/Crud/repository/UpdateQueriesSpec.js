@@ -8,8 +8,10 @@ define(function (require) {
         TextField = require('ng-admin/es6/lib/Field/TextField'),
         Entity = require('ng-admin/es6/lib/Entity/Entity'),
         DataStore = require('ng-admin/es6/lib/DataStore/DataStore'),
+        PromisesResolver = require('mock/PromisesResolver'),
         Restangular = require('mock/Restangular'),
         mixins = require('mixins'),
+        adminDescription,
         config,
         entity,
         view;
@@ -29,6 +31,12 @@ define(function (require) {
                 };
             };
 
+            adminDescription = {
+                getPromisesResolver: function() {
+                    return PromisesResolver;
+                }
+            };
+
             entity = new Entity('cat').identifier(new Field('id'));
             view = entity.creationView()
                 .addField(new TextField('name'));
@@ -37,7 +45,7 @@ define(function (require) {
         describe("updateOne", function () {
 
             it('should PUT an entity when calling updateOne', function (done) {
-                var updateQueries = new UpdateQueries({}, Restangular, config),
+                var updateQueries = new UpdateQueries({}, Restangular, config, adminDescription),
                     rawEntity = {id: 3, name: 'Mizu'};
 
                 spyOn(Restangular, 'oneUrl').and.callThrough();
