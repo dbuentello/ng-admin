@@ -1,6 +1,7 @@
 import Application from "./Application";
 import Entity from "./Entity/Entity";
 import DataStore from "./DataStore/DataStore";
+import PromisesResolver from "./Utils/PromisesResolver";
 
 import Field from "./Field/Field";
 import BooleanField from "./Field/BooleanField";
@@ -64,6 +65,10 @@ class Factory {
 
     getDataStore() {
         return new DataStore();
+    }
+
+    getPromisesResolver() {
+        return PromisesResolver;
     }
 
     _init() {

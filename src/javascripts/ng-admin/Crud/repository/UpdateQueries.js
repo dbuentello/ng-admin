@@ -36,7 +36,7 @@ define(function (require) {
             });
     };
 
-    UpdateQueries.$inject = ['$q', 'Restangular', 'NgAdminConfiguration', 'PromisesResolver'];
+    UpdateQueries.$inject = ['$q', 'Restangular', 'NgAdminConfiguration', 'AdminDescription'];
 
     return UpdateQueries;
 });

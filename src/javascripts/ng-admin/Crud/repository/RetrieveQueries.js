@@ -245,7 +245,7 @@ define(function (require) {
             });
     };
 
-    RetrieveQueries.$inject = ['$q', 'Restangular', 'NgAdminConfiguration', 'PromisesResolver'];
+    RetrieveQueries.$inject = ['$q', 'Restangular', 'NgAdminConfiguration', 'AdminDescription'];
 
     return RetrieveQueries;
 });
